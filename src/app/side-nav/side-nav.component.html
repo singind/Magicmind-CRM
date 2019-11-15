@@ -1,0 +1,42 @@
+<style>
+
+.sidebar a {
+      display: block;
+      color: black;
+      padding: 16px;
+      text-decoration: none;
+    }
+
+    .sidebar a.active {
+      background-color: #4c56af;
+      color: white;
+    }
+
+    .sidebar a:hover:not(.active) {
+      background-color: #555;
+      color: white;
+    }
+
+
+
+    @media screen and (max-width: 700px) {
+      .sidebar a {float: left;}
+
+    }
+
+    @media screen and (max-width: 400px) {
+      .sidebar a {
+        text-align: center;
+        float: none;
+      }
+    }
+
+</style>
+
+
+<div class="sidebar"   *ngIf="token" >
+
+    <div *ngFor='let routes  of route'>
+     <a   [ngClass]="{'active' : selectedItem == routes}" (click)='activeList(routes)'   routerLink='/{{routes.sidebar_route}}'> {{routes.sidebar_name}} </a>
+    </div>
+</div>

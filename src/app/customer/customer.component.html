@@ -1,0 +1,75 @@
+<style>
+
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+
+
+</style>
+
+
+<button mat-button *ngIf='!addCustomer'  (click)='addCustmr()'> Add Customer + </button>
+
+
+
+<div *ngIf='addCustomer'>
+<app-add-customers></app-add-customers>
+<button mat-button (click)='addCustmr()'> Close  </button>
+</div>
+
+<br> <br> <br>
+
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+<div *ngIf='dataSource ; else noCUSTOMER'>
+<table mat-table
+       [dataSource]="dataSource" multiTemplateDataRows
+       class="mat-elevation-z8">
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+    <td mat-cell *matCellDef="let element" (click)='getProposalByCustomer(element)'> {{element[column]}} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+
+        <div class="example-element-description">
+
+         <div *ngIf='ProposalByCustomer ; else noProposal'>
+         <h1> Projects Under Customer </h1>
+         <td *ngFor='let data of ProposalByCustomer'>
+           <tr> </tr>
+         </td>
+
+         </div>
+         <div>
+          <ng-template #noProposal>  <h1>No project available Under Customer </h1></ng-template>
+        </div>
+
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>
+</div>
+<ng-template #noCUSTOMER><h1> No Customer added </h1></ng-template>
+
+

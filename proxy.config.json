@@ -1,0 +1,7 @@
+{
+    "/api/*": {
+       "target": "http://skewcommerce.test/api",
+       "secure": false,
+       "pathRewrite": {"^/api" : ""}
+     }
+   }

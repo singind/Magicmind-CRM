@@ -1,0 +1,342 @@
+<style>
+  div {
+    margin-top: 6%;
+  }
+
+  .textArea {
+    width: 400px;
+    height: 200px;
+    border: 1px solid #555;
+    overflow: auto;
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  .block-inline {
+    display: inline-block;
+  }
+</style>
+
+
+<!-- <button (click)='addCustomerField()'> Add Customers+ </button>
+
+
+  <app-add-customers *ngIf='addCustomer' (onCustomerAdded)="onCustomerAdd($event)" ></app-add-customers> -->
+
+
+<form [formGroup]='PackageDetails' (ngSubmit)="onSubmit()">
+
+
+  <div>
+    <H1> Project Details </H1>
+    <div>
+      <label> Customer Name : </label>
+      <input type="text" (keyup)="getUserIdsFirstWay($event)" id="userIdFirstWay" list="dynmicUserIds" />
+      <datalist id="dynmicUserIds">
+        <select formControlName="customerId">
+          <option *ngFor="let item of userList1" [value]="item.customerName">{{item.customerName}}</option>
+        </select>
+      </datalist>
+    </div>
+
+    <div>
+      <label> Business Name </label>
+      <input type='text' formControlName="BusinessName">
+    </div>
+
+
+
+
+    <div>
+      <label> Proposal Details </label>
+      <ckeditor formControlName="proposal_details" value='data' [editor]="Editor" data=""></ckeditor>
+    </div>
+
+
+    <!-- Package and Budget INFO  -->
+    <div>
+
+      <h2><label> Package and Budget Info </label></h2>
+      <!-- custom payment for indivisual packages -->
+      <!-- <ng-container *ngFor="let item of array"> -->
+      <ng-template #paybyPname>
+        <div formArrayName="Package_budget"
+          *ngFor="let skill of PackageDetails.get('Package_budget').controls; let i = index">
+          <div [formGroupName]="i">
+
+            <div class='block-inline'> <label [for]="'packag_type'+i"> packag type </label>
+              <select formControlName="packag_type" [id]="'packag_type'+i" (change)='getPackageType(i)' (change)='getpackListName(i)' autocomplete>
+                <option *ngFor="let item of pTypeId" [ngValue]="item.package_id" >{{item.package_name}}
+                </option>
+              </select>
+            </div>
+
+            <div *ngIf='PackageDetails.value.Package_budget[i].packag_type' class='block-inline'>
+              <label [for]="'package_list_id'+i"> package list</label>
+              <select formControlName="package_list_id"  autocomplete [id]="'package_list_id'+i" (change)='getPackageDetails(i)'>
+                <option  *ngFor="let item of packageList"  [ngValue]="item.id">{{item.packageName}}</option>
+              </select>
+            </div>
+
+            <div class='block-inline' class='block-inline' *ngIf='PackageDetails.value.Package_budget[i].checktoaddPayemt'>
+              <label [for]="'custumCosting'+i"> </label>
+              <select>
+                <option value='item' *ngFor="let item of currency"> {{item}} </option>
+              </select>
+              <input type='text' (input)='custumCosting($event.value , i)' formControlName="custumCosting" [id]="'custumCosting'+i" appOnlyNumber="true">
+            </div>
+
+            <div *ngIf="PackageDetails.value.Package_budget[i].package_list_id" class='block-inline'>
+              <mat-checkbox class="example-margin" formControlName="checktoaddPayemt" [id]="'checktoaddPayemt'+i"
+                [labelPosition]="labelPosition" (change)='paymentManual($event , i)'>
+                {{texttoaddPayemt}}
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <div>
+            <button type='button' (click)="add(i)">add</button>
+          </div>
+
+        </div>
+
+
+
+
+      </ng-template>
+
+
+
+
+      <!-- adding custom payment for full package -->
+      <div *ngIf='cbforPaymanually ; else paybyPname'>
+        <div>
+          <label> Total Package Fee</label>
+          <select formControlName='totalPackageFee_cur'>
+            <option value='item' *ngFor="let item of currency"> {{item}} </option>
+          </select>
+          <input type='text' formControlName="totalPackageFee" appOnlyNumber="true">
+        </div>
+      </div>
+
+      <section class="example-section">
+        <mat-checkbox class="example-margin" (change)='checkboxforFullPackage($event)'
+          [labelPosition]="checkBoxforADDINGbudgetmanually">
+          {{checkBoxforADDINGbudgetmanually}}
+        </mat-checkbox>
+      </section>
+      <!-- custom payment for full package ends -->
+
+      <!-- SignUp Ammount -->
+      <div>
+        <label> SignUp Amount</label>
+        <select formControlName='signUpAmount_cur'>
+          <option value='item' *ngFor="let item of currency"> {{item}} </option>
+        </select>
+        <input type='text' formControlName="signUpAmount" appOnlyNumber="true">
+      </div>
+      <!-- signup Ammount ends -->
+    </div>
+
+    <!-- Package and Budget INFO ends  -->
+
+    <!-- time duration  -->
+    <div>
+      <h2> <label> Duration : </label> </h2>
+      <div *ngIf='DisplaybyDate ; else DisplaybyTime'>
+        <div>
+          <label> Start Date </label>
+          <mat-form-field>
+            <input matInput formControlName='StartDate' [matDatepicker]="From" placeholder="Choose a date">
+            <mat-datepicker-toggle matSuffix [for]="From"></mat-datepicker-toggle>
+            <mat-datepicker #From></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf='DisplayEndDATE'>
+          <label> Deadline </label>
+          <mat-form-field>
+            <input matInput formControlName='endDate' [matDatepicker]="to" placeholder="Choose a date">
+            <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+            <mat-datepicker #to></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <section class="example-section">
+          <mat-checkbox class="example-margin" (change)='checkboxDuration($event)' [labelPosition]="labelPosition">
+            {{checkBoxDisplayDate}}
+          </mat-checkbox>
+        </section>
+      </div>
+
+
+      <ng-template #DisplaybyTime><input formControlName="project_hours" type='text'><label>hr</label></ng-template>
+
+      <section class="example-section">
+        <mat-checkbox class="example-margin" (change)='CheckBoxByHour($event)' [labelPosition]="CheckBoxByHour">
+          {{cbByHour}}
+        </mat-checkbox>
+      </section>
+    </div>
+    <!-- time duration ends  -->
+
+
+    <!-- File Upload  -->
+    <div> <label> Upload File </label>
+      <div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)">
+        <input hidden type="file" placeholder="Upload File" #fileInput (change)="uploadFile($event.target.files)">
+      </div>
+      <div class="files-list" *ngFor="let file of files;let i= index">
+        <p> {{ file }} </p>
+        <button class="delete-file" (click)="deleteAttachment(i)">
+          <img src="../../assets/Recycle_Bin_Full.png">
+        </button>
+      </div>
+    </div>
+    <!-- File Upload Ends  -->
+
+
+
+    <!-- Submitt bUtton -->
+    <div>
+      <input type='submit' value='submit'>
+    </div>
+    <!-- Submitt bUtton Ends -->
+
+
+  </div>
+
+
+</form>
+
+
+<!--
+	"proposal_details"	:	"Business Analysis.Keyword Analysis.",
+	"signup_amount"		:	"$120",
+	"total_package_fee"	:	"$20",
+	"full_package"		:	"$80" -->
+
+
+
+
+
+<style>
+  .uploadfilecontainer {
+    background-image: url("../../assets/cloud-2044823_960_720.png");
+    background-repeat: no-repeat;
+    background-size: 100px;
+    background-position: center;
+    height: 200px;
+    width: 80%;
+    margin: 20px auto;
+    border: 2px dashed #1C8ADB;
+    border-radius: 10px;
+  }
+
+  .uploadfilecontainer:hover {
+    cursor: pointer;
+    background-color: #9ecbec !important;
+    opacity: 0.8;
+  }
+
+  .files-list {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 10px auto;
+    background: #ffffff;
+    border: 1px dashed;
+    border-radius: 12px;
+    padding: 5px;
+    color: #1c8adb;
+  }
+
+  .files-list .delete-file {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .files-list .delete-file img {
+    width: 30px;
+  }
+
+  .uploadfilecontainer {
+    background-image: url("../../assets/cloud-2044823_960_720.png");
+    background-repeat: no-repeat;
+    background-size: 100px;
+    background-position: center;
+    height: 200px;
+    width: 80%;
+    margin: 20px auto;
+    border: 2px dashed #1C8ADB;
+    border-radius: 10px;
+  }
+
+  .uploadfilecontainer:hover {
+    cursor: pointer;
+    background-color: #9ecbec !important;
+    opacity: 0.8;
+  }
+
+  .files-list {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 10px auto;
+    background: #ffffff;
+    border: 1px dashed;
+    border-radius: 12px;
+    padding: 5px;
+    color: #1c8adb;
+  }
+
+  .files-list .delete-file {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .files-list .delete-file img {
+    width: 30px;
+  }
+</style>
+
+
+
+
+
+
+
+<!-- custom payment for indivisual packages ends-->
+
+
+
+<!-- <div>
+                      <div class='block-inline'>  <label> packag type </label>
+                            <select formControlName="packag_type" (change)='getpackListName()'>
+                            <option *ngFor="let item of pTypeId" [ngValue]="item.package_id" >{{item.package_name}}</option>
+                                </select>
+                        </div>
+
+                        <div *ngIf='PackageDetails.get("packag_type").value' class='block-inline'>
+                                    <label> package list</label>
+                                    <select formControlName="package_list_id" (change)='getPackageDetails(1)'>
+                                          <option *ngFor="let item of packageList" [ngValue]="item" >{{item.packageName}}</option>
+                                    </select>
+                        </div>
+
+                    <div class='block-inline' class='block-inline' *ngIf='manulaPayBox'>
+                        <select>
+                        <option value='item' *ngFor="let item of currency" > {{item}} </option>
+                        </select>
+                        <input type='text' formControlName="signUpAmount" appOnlyNumber="true">
+                    </div>
+
+                      <div *ngIf='PackageDetails.get("package_list_id").value' class='block-inline'>
+                            <mat-checkbox class="example-margin" [labelPosition]="labelPosition" (change)='paymentManual($event)'>
+                            {{texttoaddPayemt}}
+                            </mat-checkbox>
+                      </div>
+                 </div> -->
