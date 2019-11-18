@@ -1,14 +1,64 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-
+@import '~@angular/cdk/overlay-prebuilt.css';
 body {
   font-family: Roboto, Arial, sans-serif;
   margin: 0;
 }
+$midium_font:24px;
+$small_font:16px;
+$primery_color:#662d91;
+$secondary_color:#25aae1;
 .basic-container {
   padding: 30px;
 }
 .version-info {
   font-size: 8pt;
   float: right;
+}
+@mixin btn_style($bg_color, $color){
+  background-color: $bg_color;
+  color: $color;
+  font-size: $small_font;
+  border:1px solid $bg_color;
+  font-weight: 600;
+  padding: 7px 30px;
+  border-radius: 35px;
+  display: table;
+  margin:40px auto 0px;
+  &:hover{
+    background-color: $color;
+    color: $bg_color;
+  }
+}
+.mat-form-field{
+  width: 100%;
+}
+.heading{
+  font-size: $midium_font;
+  text-align: center;
+  color: $primery_color;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+.submit{
+  @include btn_style($bg_color: $primery_color, $color:#ffffff);
+
+}
+.new_user{
+  text-align: center;
+  margin-top: 15px;
+  a{
+    text-align: center;
+    font-size: $small_font;
+    color:#ddd;
+    button{
+      background-color: transparent;
+      border:0px;
+      font-size: $small_font;
+      font-weight: 600;
+
+    }
+  }
+  
 }
