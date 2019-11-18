@@ -35,26 +35,12 @@ export class AppComponent  {
         if (event['url'] == '/login' || event['url'] ==  '/signup' ) {
           localStorage.removeItem('currentUser');
 
+         }else if(event['url'] == '/login'){
+          this.nav.navigate(['/login']);
          }
       }
     });
   }
-
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   this.token = localStorage.getItem('currentUser');
-  //   console.log(changes);
-
-  // }
-
-
-  // tokenChek(){
-  //   if(!this.token){
-  //     console.log(this.token);
-  //     this.nav.navigate(['/login']);
-  //      }
-  // }
-
-
 
 
 }
