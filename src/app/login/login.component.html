@@ -9,17 +9,21 @@
     }
 
    </style> -->
-<div>
-        <form [formGroup]="userLogin" (ngSubmit)="onSubmit()">
-        <span>UserName/email</span>
-        <input type="text" [class.validBox]="userLogin.get('user').valid && userLogin.get('user').touched" [class.notValidBox]="userLogin.get('user').invalid && userLogin.get('user').touched" formControlName='user' placeholder="Enter UserName/email">
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <form [formGroup]="userLogin" (ngSubmit)="onSubmit()">
+          <span>UserName/email</span>
+          <input type="text" [class.validBox]="userLogin.get('user').valid && userLogin.get('user').touched" [class.notValidBox]="userLogin.get('user').invalid && userLogin.get('user').touched" formControlName='user' placeholder="Enter UserName/email">
 
-        <span>Password</span>
-        <input type="password" placeholder="enter password here" [class.validBox]="userLogin.get('password').valid && userLogin.get('password').touched" [class.notValidBox]="userLogin.get('password').invalid && userLogin.get('password').touched" formControlName='password'>
-        <input type="submit" value="Login">
-        </form>
+          <span>Password</span>
+          <input type="password" placeholder="enter password here" [class.validBox]="userLogin.get('password').valid && userLogin.get('password').touched" [class.notValidBox]="userLogin.get('password').invalid && userLogin.get('password').touched" formControlName='password'>
+          <input type="submit" value="Login">
+          </form>
 
-        <p> New User <a routerLink="/signup"><button> signup </button></a> </p>
-        <button (click)="logout()"> Logout </button>
+          <p> New User <a routerLink="/signup"><button> signup </button></a> </p>
+          <button (click)="logout()"> Logout </button>
+  </div>
+</div>
 </div>
 
