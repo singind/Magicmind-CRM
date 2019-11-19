@@ -37,7 +37,7 @@ import { MatPaginatorModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { FileUploadDirective } from './_directive/fileUpload/file-upload.directive';
-
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -79,7 +79,7 @@ import { FileUploadDirective } from './_directive/fileUpload/file-upload.directi
     MatNativeDateModule,
     MatDatepickerModule,
     CKEditorModule,
-
+    MatSelectModule,
     MDBBootstrapModule.forRoot(),
 
   ],
