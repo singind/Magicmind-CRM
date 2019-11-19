@@ -209,36 +209,66 @@ checkboxforFullPackage(value) {
 
 
 
- onSubmit() {
+onSubmit() {
   let ProjectendDate;
-  if (this.DisplayEndDATE){
+  if (this.DisplayEndDATE) {
     ProjectendDate = this.PackageDetails.get('endDate').value;
 
   } else {
-    ProjectendDate = 'noDeadLine';
+    ProjectendDate = '';
+  }
+
+  if (this.DisplaybyDate == false){
+    this.PackageDetails.get('endDate').setValue('');
+    this.PackageDetails.get('StartDate').setValue('');
+  }
+
+  if(this.cbforPaymanually){
+
+    this.PackageArray  = [];
+    this.PacageListArray = [];
+    this.customPayArr = [];
+    this.CheckAutoPayArr = [];
+
   }
 
 
+  // console.log(this.PackageArray);
+  // console.log(this.PackageArray[0]);
+  // console.log(this.PacageListArray);
+  // console.log(this.customPayArr);
+  // console.log(this.CheckAutoPayArr);
+
+  const fullPakage = this.PackageDetails.get('totalPackageFee_cur').value + ' ' + this.PackageDetails.get('totalPackageFee').value;
+  const signUpAmount = this.PackageDetails.get('signUpAmount_cur').value +' ' +this.PackageDetails.get('signUpAmount').value;
+  const formData = new FormData();
+  formData.append('customerId', this.customerId);
+  formData.append('proposal_details', this.PackageDetails.get('proposal_details').value);
+  formData.append('businessName', this.PackageDetails.get('BusinessName').value);
+  // for (var i = 0; i < this.PackageArray.length; i++) {
+  // formData.append('package_type_id', this.PackageArray[i]);
+  // }
+  formData.append('package_type_id', JSON.stringify(this.PackageArray));
+  formData.append('package_list_id', JSON.stringify(this.PacageListArray));
+  formData.append('budget', JSON.stringify(this.customPayArr));
+  formData.append('is_manual', JSON.stringify(this.CheckAutoPayArr));
+  formData.append('full_package', fullPakage);
+  formData.append('signUpAmount', signUpAmount );
+  formData.append('StartDate', this.PackageDetails.get('StartDate').value);
+  formData.append('endDate', ProjectendDate);
+  formData.append('project_hours', this.PackageDetails.get('project_hours').value);
+  formData.append('technology_used', this.PackageDetails.get('technology_used').value);
+  formData.append('attach_file', this.files);
+  formData.append('file', this.files);
+
+  console.log(this.PackageArray);
+  console.log(formData.getAll('package_type_id'));
   const token  = localStorage.getItem('currentUser');
-  const data = {
 
-    customerId: this.customerId,
-    proposal_details   : this.PackageDetails.get('proposal_details').value,
-    businessName : this.PackageDetails.get('BusinessName').value,
-    package_type_id	:	this.PackageArray,
-    package_list_id	:	this.PacageListArray,
-    budget : this.customPayArr,
-    is_manual : this.CheckAutoPayArr,
-    full_package : 	this.PackageDetails.get('totalPackageFee_cur').value + ' ' + this.PackageDetails.get('totalPackageFee').value,
-    signUpAmount	:	this.PackageDetails.get('signUpAmount_cur').value +' ' +this.PackageDetails.get('signUpAmount').value,
-    StartDate	: this.PackageDetails.get('StartDate').value,
-    endDate	: ProjectendDate,
-    project_hours : this.PackageDetails.get('project_hours').value,
-    technology_used : this.PackageDetails.get('technology_used').value,
-    attach_file : this.PackageDetails.get('attach_file').value
-    };
+  this.rest.newProposals(formData , token).subscribe(result => {
+    console.log(result);
+  });
 
-     console.log(data);
 
    }
 
